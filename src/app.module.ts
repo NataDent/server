@@ -1,10 +1,23 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+// eslint-disable-next-line prettier/prettier
+import { Module } from "@nestjs/common";
+import { UsersModule } from './users/users.module';
+import { SequelizeModule } from '@nestjs/sequelize';
+import { ConfigModule } from '@nestjs/config';
+import { SequelizeConfigService } from './config/sequelizeConfig.service';
+import { databaseConfig } from './config/configuration';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    SequelizeModule.forRootAsync({
+      imports: [ConfigModule],
+      useClass: SequelizeConfigService,
+    }),
+    ConfigModule.forRoot({
+      load: [databaseConfig],
+    }),
+    UsersModule,
+  ],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
